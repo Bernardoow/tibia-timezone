@@ -1,0 +1,73 @@
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$view = function (model) {
+	var list_of_messages = A2(
+		_elm_lang$core$List$map,
+		function (item) {
+			return item.message;
+		},
+		_elm_lang$core$Dict$values(model.messages));
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		list_of_messages);
+};
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$delay = F2(
+	function (time, msg) {
+		return A2(
+			_elm_lang$core$Task$perform,
+			_elm_lang$core$Basics$identity,
+			A2(
+				_elm_lang$core$Task$andThen,
+				_elm_lang$core$Basics$always(
+					_elm_lang$core$Task$succeed(msg)),
+				_elm_lang$core$Process$sleep(time)));
+	});
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$Model = F2(
+	function (a, b) {
+		return {messages: a, count: b};
+	});
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$modelInit = A2(_Bernardoow$elm_alert_timer_message$AlertTimerMessage$Model, _elm_lang$core$Dict$empty, 1);
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$init = {ctor: '_Tuple2', _0: _Bernardoow$elm_alert_timer_message$AlertTimerMessage$modelInit, _1: _elm_lang$core$Platform_Cmd$none};
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$Message = function (a) {
+	return {message: a};
+};
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$RemoveAlert = function (a) {
+	return {ctor: 'RemoveAlert', _0: a};
+};
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'AddNewMessage') {
+			var new_position = model.count + 1;
+			var novo = A3(
+				_elm_lang$core$Dict$insert,
+				new_position,
+				_Bernardoow$elm_alert_timer_message$AlertTimerMessage$Message(_p0._1),
+				model.messages);
+			var newModel = _elm_lang$core$Native_Utils.update(
+				model,
+				{messages: novo, count: new_position});
+			return A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				newModel,
+				{
+					ctor: '::',
+					_0: A2(
+						_Bernardoow$elm_alert_timer_message$AlertTimerMessage$delay,
+						_elm_lang$core$Time$second * _p0._0,
+						_Bernardoow$elm_alert_timer_message$AlertTimerMessage$RemoveAlert(new_position)),
+					_1: {ctor: '[]'}
+				});
+		} else {
+			var newDict = A2(_elm_lang$core$Dict$remove, _p0._0, model.messages);
+			return A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				_elm_lang$core$Native_Utils.update(
+					model,
+					{messages: newDict}),
+				{ctor: '[]'});
+		}
+	});
+var _Bernardoow$elm_alert_timer_message$AlertTimerMessage$AddNewMessage = F2(
+	function (a, b) {
+		return {ctor: 'AddNewMessage', _0: a, _1: b};
+	});

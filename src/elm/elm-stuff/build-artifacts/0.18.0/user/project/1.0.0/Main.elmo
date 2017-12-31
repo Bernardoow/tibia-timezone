@@ -1,0 +1,434 @@
+var _user$project$Main$onSelect = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, msg, _elm_lang$html$Html_Events$targetValue));
+};
+var _user$project$Main$get_timezones = _elm_lang$core$Native_Platform.outgoingPort(
+	'get_timezones',
+	function (v) {
+		return v;
+	});
+var _user$project$Main$get_tz_preference = _elm_lang$core$Native_Platform.outgoingPort(
+	'get_tz_preference',
+	function (v) {
+		return v;
+	});
+var _user$project$Main$save_tz_preference = _elm_lang$core$Native_Platform.outgoingPort(
+	'save_tz_preference',
+	function (v) {
+		return v;
+	});
+var _user$project$Main$timezones = _elm_lang$core$Native_Platform.incomingPort(
+	'timezones',
+	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
+var _user$project$Main$timezone_preference = _elm_lang$core$Native_Platform.incomingPort('timezone_preference', _elm_lang$core$Json_Decode$string);
+var _user$project$Main$save_tz_preference_return = _elm_lang$core$Native_Platform.incomingPort('save_tz_preference_return', _elm_lang$core$Json_Decode$bool);
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {tz_list: a, tz_preference: b, search: c, current_tz_selected: d, alert_messages: e};
+	});
+var _user$project$Main$init = function () {
+	var model = A5(
+		_user$project$Main$Model,
+		{ctor: '[]'},
+		_elm_lang$core$Maybe$Nothing,
+		_elm_lang$core$Maybe$Nothing,
+		_elm_lang$core$Maybe$Nothing,
+		_Bernardoow$elm_alert_timer_message$AlertTimerMessage$modelInit);
+	return {
+		ctor: '_Tuple2',
+		_0: model,
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			{
+				ctor: '::',
+				_0: _user$project$Main$get_timezones(''),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$get_tz_preference(''),
+					_1: {ctor: '[]'}
+				}
+			})
+	};
+}();
+var _user$project$Main$SelectChanged = function (a) {
+	return {ctor: 'SelectChanged', _0: a};
+};
+var _user$project$Main$SaveTzPreference = {ctor: 'SaveTzPreference'};
+var _user$project$Main$AlertTimer = function (a) {
+	return {ctor: 'AlertTimer', _0: a};
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'SearchInput':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							search: _elm_lang$core$Maybe$Just(_p0._0)
+						}),
+					{ctor: '[]'});
+			case 'Timezones':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{tz_list: _p0._0}),
+					{ctor: '[]'});
+			case 'TimezonePreference':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tz_preference: _elm_lang$core$Maybe$Just(_p0._0)
+						}),
+					{ctor: '[]'});
+			case 'TimezonePreferenceReturn':
+				var newMsg = A2(
+					_Bernardoow$elm_alert_timer_message$AlertTimerMessage$AddNewMessage,
+					3,
+					A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Your preference was saved with success.'),
+							_1: {ctor: '[]'}
+						}));
+				var _p1 = A2(_Bernardoow$elm_alert_timer_message$AlertTimerMessage$update, newMsg, model.alert_messages);
+				var updateModal = _p1._0;
+				var subCmd = _p1._1;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{alert_messages: updateModal, current_tz_selected: _elm_lang$core$Maybe$Nothing, tz_preference: model.current_tz_selected}),
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$AlertTimer, subCmd),
+						_1: {ctor: '[]'}
+					});
+			case 'AlertTimer':
+				var _p2 = A2(_Bernardoow$elm_alert_timer_message$AlertTimerMessage$update, _p0._0, model.alert_messages);
+				var updateModal = _p2._0;
+				var subCmd = _p2._1;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{alert_messages: updateModal}),
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$AlertTimer, subCmd),
+						_1: {ctor: '[]'}
+					});
+			case 'SaveTzPreference':
+				var _p3 = model.current_tz_selected;
+				if (_p3.ctor === 'Nothing') {
+					var newMsg = A2(
+						_Bernardoow$elm_alert_timer_message$AlertTimerMessage$AddNewMessage,
+						3,
+						A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Choose your timezone.'),
+								_1: {ctor: '[]'}
+							}));
+					var _p4 = A2(_Bernardoow$elm_alert_timer_message$AlertTimerMessage$update, newMsg, model.alert_messages);
+					var updateModal = _p4._0;
+					var subCmd = _p4._1;
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{alert_messages: updateModal}),
+						{
+							ctor: '::',
+							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$AlertTimer, subCmd),
+							_1: {ctor: '[]'}
+						});
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						model,
+						{
+							ctor: '::',
+							_0: _user$project$Main$save_tz_preference(_p3._0),
+							_1: {ctor: '[]'}
+						});
+				}
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							current_tz_selected: _elm_lang$core$Maybe$Just(_p0._0)
+						}),
+					{ctor: '[]'});
+		}
+	});
+var _user$project$Main$TimezonePreferenceReturn = function (a) {
+	return {ctor: 'TimezonePreferenceReturn', _0: a};
+};
+var _user$project$Main$TimezonePreference = function (a) {
+	return {ctor: 'TimezonePreference', _0: a};
+};
+var _user$project$Main$Timezones = function (a) {
+	return {ctor: 'Timezones', _0: a};
+};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: _user$project$Main$timezones(_user$project$Main$Timezones),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$timezone_preference(_user$project$Main$TimezonePreference),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$save_tz_preference_return(_user$project$Main$TimezonePreferenceReturn),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Main$SearchInput = function (a) {
+	return {ctor: 'SearchInput', _0: a};
+};
+var _user$project$Main$view = function (model) {
+	var mount_options = function (list) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (item) {
+				return A2(
+					_elm_lang$html$Html$option,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(item),
+						_1: {ctor: '[]'}
+					});
+			},
+			list);
+	};
+	var options = function () {
+		var _p5 = model.search;
+		if (_p5.ctor === 'Nothing') {
+			return mount_options(model.tz_list);
+		} else {
+			return mount_options(
+				A2(
+					_elm_lang$core$List$filter,
+					function (item) {
+						return A2(
+							_elm_lang$core$String$contains,
+							_p5._0,
+							_elm_lang$core$String$toLower(item));
+					},
+					model.tz_list));
+		}
+	}();
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Tibia Timezone'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$map,
+					_user$project$Main$AlertTimer,
+					_Bernardoow$elm_alert_timer_message$AlertTimerMessage$view(model.alert_messages)),
+				_1: {
+					ctor: '::',
+					_0: function () {
+						var _p6 = model.tz_preference;
+						if (_p6.ctor === 'Nothing') {
+							return A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{ctor: '[]'});
+						} else {
+							var msg = A2(_elm_lang$core$Basics_ops['++'], 'Your preference: ', _p6._0);
+							return A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(msg),
+									_1: {ctor: '[]'}
+								});
+						}
+					}(),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('form-group'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$for('searchField'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Timezone'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$input,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SearchInput),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('form-control'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$id('searchField'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$placeholder('Search for you timezone.'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$type_('text'),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('form-group'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$select,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('form-control'),
+													_1: {
+														ctor: '::',
+														_0: _user$project$Main$onSelect(_user$project$Main$SelectChanged),
+														_1: {ctor: '[]'}
+													}
+												},
+												options),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('btn btn-primary btn-block'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$SaveTzPreference),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Save preference'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$p,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('center-block'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Almost all images on this site are from the game Tibia.'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$p,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('center-block'),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Please note that the only official website is Tibia.com.'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$p,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('center-block'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('The game Tibia and the website Tibia.com are copyrighted by CipSoft GmbH.'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$program(
+	{view: _user$project$Main$view, init: _user$project$Main$init, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();

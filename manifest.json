@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+
+  "name": "Tibia Timezone",
+  "description": "This extension allows the user to change the timezone of tibia character page.",
+  "version": "0.1.1",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "matches": ["https://secure.tibia.com/community/*"],
+      "js": ["src/js/popup.js", "src/js/jquery.min.js", "src/js/moment-with-locales.min.js", "src/js/moment-timezone-with-data.min.js", "src/js/converter.js"]
+    }
+  ],
+
+  "permissions": [
+    "activeTab",
+    "storage"
+  ]
+}
